@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import TravelerNavBar from './TravelerNavBar';
 import './Train.css';
+import axios from 'axios';
 
 
 function AddTraveler() {
@@ -11,35 +12,30 @@ function AddTraveler() {
 };
 
   // State to manage traveler data with default values
-  const [travelData, setTravelData] = useState({
-    firstName: '', 
-    lastName: '', 
-    dateOfBirth: '',
-    idNumber: '',
-    email:'',
-    trvalertype: '',
-    isActive:true ,
-  });
+  const [userName, setuserName]= useState("");
+  const [password, setpassword]= useState("");
+  const [nic, setnic]= useState("");
+  const [isActive, setisActive]= useState(true);
 
   // State to manage success alert display
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Function to handle changes in form fields
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    // Handle checkbox input
-    if (type === 'checkbox') {
-      setTravelData((prevState) => ({
-        ...prevState,
-        [name]: checked,
-      }));
-    } else {
-    setTravelData((prevState) => ({
-      ...prevState,
-      [name]: name === 'firstClassCapacity' || name === 'secondClassCapacity' || name === 'thirdClassCapacity' ? parseInt(value, 10) : value,
-    }));
-  }
-  };
+  // const handleChange = (event) => {
+  //   const { name, value, type, checked } = event.target;
+  //   // Handle checkbox input
+  //   if (type === 'checkbox') {
+  //     setTravelData((prevState) => ({
+  //       ...prevState,
+  //       [name]: checked,
+  //     }));
+  //   } else {
+  //   setTravelData((prevState) => ({
+  //     ...prevState,
+  //     [name]: name === 'firstClassCapacity' || name === 'secondClassCapacity' || name === 'thirdClassCapacity' ? parseInt(value, 10) : value,
+  //   }));
+  // }
+  // };
   
   // Function to handle form submission
   const handleSubmit = async (event) => {
@@ -47,23 +43,15 @@ function AddTraveler() {
 
     try {
       // Add new traveler from the api endpoint
-      const response = await fetch('http://localhost:5046/api/traveler/new-traveler', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(travelData),
+      const response = await axios.post('http://localhost:5212/api/Registration/users', {
+        userName: userName,
+        password: password,
+        nic: nic,
+        isActivated: true,
+
       });
 
-      if (response.ok) {
-        // Handle success, e.g., show a success message or redirect
-        setShowSuccessAlert(true);
-        console.log('Traveler added successfully.');
-      } else {
-        // Handle error response
-        const errorMessage = await response.text();
-        console.error('Error adding traveler:', errorMessage);
-      }
+    console.log('Traveler response:', response.data);
     } catch (error) {
       console.error('Error adding traveler:', error);
     }
@@ -76,80 +64,40 @@ function AddTraveler() {
       <h2 style={{ textAlign: 'center' }}>Add New Traveler</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-3">
-          <label htmlFor="firstName">First Name</label>
+          <label htmlFor="userName">Name</label>
           <input
             type="text"
-            id="firstName"
-            name="firstName"
-            value={travelData.firstName}
-            onChange={handleChange}
+            id="userName"
+            name="userName"
+            value={userName}
+            onChange={(e) => setuserName(e.target.value)}
             className="form-control"
             required
           />
         </div>
         <div className="form-group mb-3">
-          <label htmlFor="lastName">Last Name</label>
+          <label htmlFor="password">Password</label>
           <input
             type="text"
-            id="lastName"
-            name="lastName"
-            value={travelData.lastName}
-            onChange={handleChange}
+            id="password"
+            name="password"
+            value={password}
+            onChange={(e) => setpassword(e.target.value)}
             className="form-control"
             required
           />
         </div>
         <div className="form-group mb-3">
-          <label htmlFor="dateOfBirth">Date Of Birth</label>
-          <input
-            type="date"
-            id="dateOfBirth"
-            name="dateOfBirth"
-            value={(travelData.dateOfBirth)}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label htmlFor="idNumber">NIC</label>
+          <label htmlFor="nic">NIC</label>
           <input
             type="text"
-            id="idNumber"
-            name="idNumber"
-            value={travelData.idNumber}
-            onChange={handleChange}
+            id="nic"
+            name="nic"
+            value={nic}
+           onChange={(e) => setnic(e.target.value)}
             className="form-control"
             required
           />
-        </div>
-        <div className="form-group mb-3">
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            value={travelData.email}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label htmlFor="trvalertype">Traveler Type</label>
-          <select
-            id="trvalertype"
-            name="trvalertype"
-            value={travelData.trvalertype}
-            onChange={handleChange}
-            className="form-control"
-            required
-          >
-            <option value="" hidden selected>Select traveler type</option>
-            <option value="Express">Adult</option>
-            <option value="Intercity">Child</option>
-            <option value="Night Mail">Infant</option>
-          </select>
         </div>
         <div className="form-check mb-3">
           <label htmlFor="isActive">Active</label>
@@ -158,8 +106,8 @@ function AddTraveler() {
             className="form-check-input"
             id="isActive"
             name="isActive"
-            checked={travelData.isActive}
-            onChange={handleChange}
+            checked={isActive}
+             onChange={(e) => setisActive(e.target.value)}
           />
         </div>
         <div className="form-group mb-3">
