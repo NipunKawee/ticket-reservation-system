@@ -17,7 +17,7 @@ function AddReservation() {
     fromDestination: '',
     toDestination: '',
     status: true,
-    trainId: '',
+    trainId: 't002',
     numberOfSeats: 1, 
   });
 
@@ -160,7 +160,7 @@ function AddReservation() {
             value={reservationData.trainId}
             onChange={handleChange}
             className="form-control"
-            required
+          
           >
             <option value="" disabled>
               Select Train ID

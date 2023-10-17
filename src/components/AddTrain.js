@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import TrainNavBar from './TrainNavBar';
 import './Train.css';
+import axios from 'axios';
 
 
 function AddTrain() {
@@ -11,36 +12,34 @@ function AddTrain() {
 };
 
   // State to manage train data with default values
-  const [trainData, setTrainData] = useState({
-    trainNo: '', 
-    trainName: '', 
-    firstClassCapacity: 0,
-    secondClassCapacity: 0,
-    thirdClassCapacity: 0, 
-    type: '',
-    isPublished: true,
-    isActive:true ,
-  });
+   const [trainNo, settrainNo]= useState("");
+   const [trainName, settrainName]= useState(""); 
+   const [firstClassCapacity, setfirstClassCapacity]= useState(0); 
+   const [secondClassCapacity, setsecondClassCapacity]= useState(0); 
+   const [thirdClassCapacity, setthirdClassCapacity]= useState(0);
+   const [type, settype]= useState("");
+   const [isPublished, setisPublished]= useState(true);  
+   const [isActive, setisActive]= useState(true); 
 
   // State to manage success alert display
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Function to handle changes in form fields
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    // Handle checkbox input
-    if (type === 'checkbox') {
-      setTrainData((prevState) => ({
-        ...prevState,
-        [name]: checked,
-      }));
-    } else {
-    setTrainData((prevState) => ({
-      ...prevState,
-      [name]: name === 'firstClassCapacity' || name === 'secondClassCapacity' || name === 'thirdClassCapacity' ? parseInt(value, 10) : value,
-    }));
-  }
-  };
+  // const handleChange = (event) => {
+  //   const { name, value, type, checked } = event.target;
+  //   // Handle checkbox input
+  //   if (type === 'checkbox') {
+  //     setTrainData((prevState) => ({
+  //       ...prevState,
+  //       [name]: checked,
+  //     }));
+  //   } else {
+  //   setTrainData((prevState) => ({
+  //     ...prevState,
+  //     [name]: name === 'firstClassCapacity' || name === 'secondClassCapacity' || name === 'thirdClassCapacity' ? parseInt(value, 10) : value,
+  //   }));
+  // }
+  // };
   
   // Function to handle form submission
   const handleSubmit = async (event) => {
@@ -48,23 +47,20 @@ function AddTrain() {
 
     try {
       // Add new train from the api endpoint
-      const response = await fetch('http://localhost:5046/api/train/new-train', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(trainData),
+      const response = await axios.post('http://localhost:5212/api/traindetails', {
+        trainNo: trainNo, 
+        trainName: trainName,
+        firstClassCapacity: firstClassCapacity, 
+        secondClassCapacity:secondClassCapacity,
+        thirdClassCapacity:thirdClassCapacity,
+        type:type,
+        isPublished: true,
+        isActivated: true,
       });
 
-      if (response.ok) {
-        // Handle success, e.g., show a success message or redirect
-        setShowSuccessAlert(true);
-        console.log('Train added successfully.');
-      } else {
-        // Handle error response
-        const errorMessage = await response.text();
-        console.error('Error adding train:', errorMessage);
-      }
+      console.log('Train response:', response.data);
+
+
     } catch (error) {
       console.error('Error adding train:', error);
     }
@@ -82,8 +78,8 @@ function AddTrain() {
             type="text"
             id="trainNo"
             name="trainNo"
-            value={trainData.trainNo}
-            onChange={handleChange}
+            value={trainNo}
+            onChange={(e) => settrainNo(e.target.value)}
             className="form-control"
             required
           />
@@ -94,8 +90,8 @@ function AddTrain() {
             type="text"
             id="trainName"
             name="trainName"
-            value={trainData.trainName}
-            onChange={handleChange}
+            value={trainName}
+            onChange={(e) => settrainName(e.target.value)}
             className="form-control"
             required
           />
@@ -106,8 +102,8 @@ function AddTrain() {
             type="number"
             id="firstClassCapacity"
             name="firstClassCapacity"
-            value={trainData.firstClassCapacity}
-            onChange={handleChange}
+            value={firstClassCapacity}
+            onChange={(e) => setfirstClassCapacity(e.target.value)}
             className="form-control"
             required
           />
@@ -118,8 +114,8 @@ function AddTrain() {
             type="number"
             id="secondClassCapacity"
             name="secondClassCapacity"
-            value={trainData.secondClassCapacity}
-            onChange={handleChange}
+            value={secondClassCapacity}
+            onChange={(e) => setsecondClassCapacity(e.target.value)}
             className="form-control"
             required
           />
@@ -130,8 +126,8 @@ function AddTrain() {
             type="number"
             id="thirdClassCapacity"
             name="thirdClassCapacity"
-            value={trainData.thirdClassCapacity}
-            onChange={handleChange}
+            value={thirdClassCapacity}
+            onChange={(e) => setthirdClassCapacity(e.target.value)}
             className="form-control"
             required
           />
@@ -141,8 +137,8 @@ function AddTrain() {
           <select
             id="type"
             name="type"
-            value={trainData.type}
-            onChange={handleChange}
+            value={type}
+            onChange={(e) => settype(e.target.value)}
             className="form-control"
             required
           >
@@ -160,8 +156,8 @@ function AddTrain() {
             className="form-check-input"
             id="isActive"
             name="isActive"
-            checked={trainData.isActive}
-            onChange={handleChange}
+            checked={isActive}
+            onChange={(e) => setisActive(e.target.value)}
           />
         </div>
         <div className="form-check mb-3">
@@ -171,8 +167,8 @@ function AddTrain() {
             className="form-check-input"
             id="isPublished"
             name="isPublished"
-            checked={trainData.isPublished}
-            onChange={handleChange}
+            checked={isPublished}
+            onChange={(e) => setisPublished(e.target.value)}
           />
         </div>
         <div className="form-group mb-3">

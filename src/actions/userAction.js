@@ -19,6 +19,7 @@ import axios from "axios";
 const token = localStorage.getItem("token");
 
 export const login = (email, password) => async (dispatch) => {
+  let nic = "12345"
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
 
@@ -29,7 +30,7 @@ export const login = (email, password) => async (dispatch) => {
       },
     };
 
-    const { data } = await axios.post( "/api/users/login", { email, password },config);
+    const { data } = await axios.post( "http://localhost:5212/api/auth", { email, password,nic },config);
 
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
@@ -67,6 +68,7 @@ export const logout = () => async (dispatch) => {
 
 
 export const register = (name, email, password, phone,pic) => async (dispatch) => {
+  let nic = "123456"
   try {
     dispatch({ type: USER_REGISTER_REQUEST });
 
@@ -77,8 +79,8 @@ export const register = (name, email, password, phone,pic) => async (dispatch) =
     };
 
     const { data } = await axios.post(
-      "/api/users",
-      { name, email, password, phone,pic },config
+      "http://localhost:5212/api/Registration/register",
+      { name, email, password, phone,pic,nic },config
     );
 
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });

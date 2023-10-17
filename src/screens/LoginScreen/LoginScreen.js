@@ -9,35 +9,37 @@ import "./Login.css";
 import ErrorMessage from '../../ErrorMessage/ErrorMessage';
 import Loading from "../Loading/Loading";
 import { login } from "../../actions/userAction";
+import axios from 'axios';
 
 const LoginScreen = () => {
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
 
-const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error } = userRegister;
 
-
-//call the user Action for login
-const dispatch=useDispatch();
-//reducers
-const userLogin = useSelector((state) => state.userLogin);
-//3`
-const { loading, error, userInfo } = userLogin;
-//assign to the localstorage
-
-
-//4
-  useEffect(() => {
-    const userInfo=localStorage.getItem("userInfo");
-  if (userInfo) {
-    navigate("/login");
-  }
-}, [navigate, userInfo]);
-
-const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(login(email,password));
-};
+   {
+      try {
+        const response = await axios.post('http://localhost:5212/api/auth', {
+          userName: name,  // Use the user input for 'userName'
+          password: password, // Use the user input for 'password'
+          nic: name, // Use the user input for 'nic'
+        });
+
+        // Handle the response as needed
+        console.log('Login response:', response.data);
+        // Redirect or perform other actions on success
+
+      } catch (error) {
+        // Handle any errors
+        console.error('Login error:', error);
+        // Update 'error' state or display an error message
+      }
+    }
+  };
 
 
   return (
@@ -50,13 +52,13 @@ const submitHandler = async(e) => {
           {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
           {loading && <Loading />}
           <Form onSubmit={submitHandler}>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+            <Form.Group controlId="name">
+              <Form.Label>NIC</Form.Label>
               <Form.Control
-                type="email"
-                value={email}
-                placeholder="Enter email"
-                onChange={(e) => setEmail(e.target.value)}
+                type="name"
+                value={name}
+                placeholder="NIC"
+                onChange={(e) => setName(e.target.value)}
               />
             </Form.Group>
 
@@ -72,9 +74,10 @@ const submitHandler = async(e) => {
 
 
               <br/>
-            <Button variant="primary" type="submit">
+            <Link to = '/admin-home'><Button variant="primary" type="submit">
               Submit
             </Button>
+            </Link>
           </Form>
           <Row className="py-3">
             <Col>
